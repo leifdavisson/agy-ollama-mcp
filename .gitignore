@@ -10,3 +10,9 @@ build/
 mutants/
 coverage.json
 .hypothesis/
+.mypy_cache/
+.venv/
+venv/
+env/
+*.log
+.DS_Store
