@@ -140,6 +140,7 @@ def test_local_chunked_summary_large_content():
 
 @verifies("REQ-008")
 def test_mcp_stdio_handshake_and_tools():
+    """Test full MCP STDIO JSON-RPC handshake and tools enumeration."""
     repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     bridge_path = os.path.join(repo_root, "ollama_mcp_bridge.py")
     env = dict(os.environ)
