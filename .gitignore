@@ -7,3 +7,6 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+mutants/
+coverage.json
+.hypothesis/

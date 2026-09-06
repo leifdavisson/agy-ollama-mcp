@@ -1,0 +1,1050 @@
+{
+  "version": "1.0.0",
+  "governance": "INCOSE-DO-178C-Level-A",
+  "summary": {
+    "total_requirements": 8,
+    "verified_requirements": 8,
+    "coverage_percentage": 100.0,
+    "total_verifying_tests_ast": 124,
+    "orphaned_tests_count": 0,
+    "uncovered_requirements_count": 0,
+    "statement_coverage_percentage": 100.0,
+    "branch_coverage_percentage": 100.0,
+    "mutation_score_percentage": 91.0
+  },
+  "requirements_matrix": [
+    {
+      "requirement_id": "REQ-001",
+      "title": "Deterministic Model Resolution",
+      "safety_level": "CRITICAL",
+      "description": "The system shall resolve the execution model according to strict precedence: (1) explicit tool argument, (2) LOCAL_LLM_MODEL environment variable, (3) auto-detected preferred model from Ollama /api/tags, and (4) default fallback 'qwen2.5-coder:14b'.",
+      "acceptance_criteria": [
+        "Explicit argument overrides environment variable and auto-detection.",
+        "Non-empty LOCAL_LLM_MODEL overrides auto-detection when no explicit argument is provided.",
+        "Auto-detection selects preferred coder model if available.",
+        "System falls back to default model if API call fails or no tags exist."
+      ],
+      "specification_feature": "features/model_resolution.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/resolution.py",
+        "src/ollama_bridge/config.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 27,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_resolution_fetch_tags_names_exception",
+          "line_number": 94,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_resolution_fetch_tags_names_success_and_edge_cases",
+          "line_number": 117,
+          "description": "Kill mutants in _fetch_tags_names: URL, timeout, status_code, JSON parsing."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_resolution_select_preferred_model_filtering",
+          "line_number": 150,
+          "description": "Kill mutants in select_preferred_model: whitespace and candidate matching."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_resolution_resolve_model_defaults_and_whitespace",
+          "line_number": 167,
+          "description": "Kill mutants in resolve_model: default argument, empty string fallthrough."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_resolution_coder_keyword_fallback",
+          "line_number": 486,
+          "description": "Kill mutants in coder keyword selection."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_resolve_model_delegation_to_available_models",
+          "line_number": 627,
+          "description": "Kill mutants in OllamaClient.resolve_model argument wiring and get_available_models call."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_resolve_model_explicit",
+          "line_number": 33,
+          "description": "Explicit requested model should always take precedence."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_resolve_model_from_env",
+          "line_number": 40,
+          "description": "LOCAL_LLM_MODEL env var should be respected if set."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_resolve_model_autodetect",
+          "line_number": 48,
+          "description": "Auto-detect should pick coding models from available tags."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_spec_scenario_1_explicit_model_precedence",
+          "line_number": 68,
+          "description": "Scenario: Explicit model parameter takes highest precedence"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_spec_scenario_2_env_var_precedence",
+          "line_number": 85,
+          "description": "Scenario: Configured environment variable takes precedence when no explicit model is provided"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_spec_scenario_3_autodetect_preferred_coder_model",
+          "line_number": 102,
+          "description": "Scenario: Auto-detection selects preferred coder model when available"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_spec_scenario_4_fallback_model_when_unreachable",
+          "line_number": 121,
+          "description": "Scenario: Fallback model is selected when Ollama is unreachable"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_explicit_model_whitespace_is_trimmed",
+          "line_number": 139,
+          "description": "Explicit argument with surrounding whitespace is stripped and honored."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_env_var_whitespace_is_trimmed",
+          "line_number": 147,
+          "description": "Configured environment variable with surrounding whitespace is stripped."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_autodetect_respects_preferred_hierarchy_ranking",
+          "line_number": 155,
+          "description": "When multiple preferred models are available, resolution chooses the one"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_autodetect_heuristic_coder_keyword",
+          "line_number": 172,
+          "description": "When no exact match exists in PREFERRED_MODELS, any model containing 'coder'"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_autodetect_heuristic_code_keyword",
+          "line_number": 188,
+          "description": "When no exact match exists in PREFERRED_MODELS, any model containing 'code'"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_autodetect_first_available_when_no_coder_keyword",
+          "line_number": 203,
+          "description": "When available models do not match preferred list or coder heuristics,"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_fallback_when_available_list_is_empty",
+          "line_number": 218,
+          "description": "Empty available model list falls back to DEFAULT_FALLBACK_MODEL."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_select_preferred_model_helper_standalone",
+          "line_number": 226,
+          "description": "Unit test for select_preferred_model helper function."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_mcdc_model_resolution_truth_table",
+          "line_number": 291,
+          "description": "MC/DC compound boolean predicate truth-table vector test."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_property_arbitrary_explicit_model_strings",
+          "line_number": 319,
+          "description": "Property: Any arbitrary non-empty string provided as an explicit argument"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_property_empty_whitespace_explicit_falls_through_to_env",
+          "line_number": 337,
+          "description": "Property: Empty or whitespace-only explicit argument strings must fall through"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_property_resolution_invariant_always_non_empty",
+          "line_number": 358,
+          "description": "Property Invariant: resolve_model MUST ALWAYS return a non-empty, stripped string"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_config_runtime_constants_defaults",
+          "line_number": 426,
+          "description": "Verify runtime configuration constants and defaults match specifications."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_config_get_configured_model_env_override",
+          "line_number": 438,
+          "description": "Verify get_configured_model reads dynamically from LOCAL_LLM_MODEL."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-002",
+      "title": "Local Code Drafting Execution",
+      "safety_level": "CRITICAL",
+      "description": "The system shall format and dispatch code drafting prompts to the local Ollama /api/generate endpoint with a specialized software engineering system prompt, returning generated code strings.",
+      "acceptance_criteria": [
+        "Formats prompt containing language, context, and task description.",
+        "Enforces system prompt instructing clean, modular production code.",
+        "Returns Ollama response content on HTTP 200.",
+        "Returns descriptive error string on connection or HTTP failure."
+      ],
+      "specification_feature": "features/code_drafting.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/engine.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 14,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_engine_query_ollama_exception_branches",
+          "line_number": 61,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_draft_code_prompt_assembly_gherkin_scenario",
+          "line_number": 82,
+          "description": "Given a task description \"Write a thread-safe singleton in Python\""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_draft_code_returns_model_response_on_http_200",
+          "line_number": 123,
+          "description": "Verifies that on HTTP 200, the raw generated code response string is returned."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_draft_code_error_propagation_on_failure",
+          "line_number": 132,
+          "description": "Verifies that connection or HTTP errors return descriptive error messages."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_draft_code_vector1_both_language_and_context",
+          "line_number": 146,
+          "description": "MC/DC Vector 1: Language=True, Context=True -> Both blocks included in prompt."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_draft_code_vector2_language_only_no_context",
+          "line_number": 157,
+          "description": "MC/DC Vector 2: Language=True, Context=False -> Language included, Context excluded."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_draft_code_vector3_context_only_no_language",
+          "line_number": 168,
+          "description": "MC/DC Vector 3: Language=False, Context=True -> Language excluded, Context included."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_draft_code_vector4_neither_language_nor_context",
+          "line_number": 179,
+          "description": "MC/DC Vector 4: Language=False, Context=False -> Neither block included."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_query_ollama_exact_payload_and_defaults",
+          "line_number": 309,
+          "description": "Kill mutants in query_ollama: payload structure, options, timeout, defaults."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_local_draft_code_prompt_and_system_exact",
+          "line_number": 353,
+          "description": "Kill mutants in local_draft_code: prompt assembly, default args, system prompt."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_query_ollama_exact_error_messages_and_empty_response",
+          "line_number": 569,
+          "description": "Kill mutants in query_ollama error messages and missing response key."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_query_ollama_success",
+          "line_number": 61,
+          "description": "Test successful query response handling."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_query_ollama_connection_error",
+          "line_number": 73,
+          "description": "Test graceful handling of Ollama connection errors."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_local_draft_code_formatting",
+          "line_number": 82,
+          "description": "Test prompt assembly in local_draft_code."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-003",
+      "title": "Dense Summarization & Noise Extraction",
+      "safety_level": "CRITICAL",
+      "description": "The system shall compress raw text, logs, or traces into high-density technical summaries matching a specified extraction goal using temperature <= 0.2.",
+      "acceptance_criteria": [
+        "Constructs extraction prompt containing target goal and content.",
+        "Instructs model to remove noise, boilerplate, and repetitive lines.",
+        "Returns distilled summary without conversational filler."
+      ],
+      "specification_feature": "features/summarization.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/engine.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 4,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_summarize_and_extract_prompt_assembly_and_noise_stripping",
+          "line_number": 195,
+          "description": "Verifies local_summarize_and_extract prompt construction and noise-stripping"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_summarize_and_extract_returns_distilled_content",
+          "line_number": 231,
+          "description": "Verifies that distilled summary is returned cleanly without conversational filler."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_local_summarize_and_extract_exact",
+          "line_number": 389,
+          "description": "Kill mutants in local_summarize_and_extract: system prompt, extraction prompt."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_local_summarize_and_extract_formatting",
+          "line_number": 99,
+          "description": "Test prompt assembly in local_summarize_and_extract."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-004",
+      "title": "Chunked Map-Reduce Summarization",
+      "safety_level": "CRITICAL",
+      "description": "The system shall partition content exceeding chunk_chars on line boundaries, generate intermediate chunk summaries, and synthesize the result into a unified report.",
+      "acceptance_criteria": [
+        "Executes single-pass extraction when content length <= chunk_chars.",
+        "Partitions content into line-delimited chunks when content length > chunk_chars.",
+        "Synthesizes intermediate chunk summaries into unified final report.",
+        "Maintains order and avoids chunk boundary truncation."
+      ],
+      "specification_feature": "features/summarization.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/engine.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 21,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_engine_partition_chunks_no_trailing_newline",
+          "line_number": 79,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_engine_chunked_summary_empty_chunks",
+          "line_number": 87,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_engine_partition_chunks_trailing_newline_empty_last_element",
+          "line_number": 114,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_engine_partition_chunks_both_branches_of_last_line",
+          "line_number": 119,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_chunked_summary_single_pass_when_len_le_chunk_chars",
+          "line_number": 244,
+          "description": "Scenario: Single pass summarization for small content"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_chunked_summary_multi_pass_map_reduce_large_content",
+          "line_number": 276,
+          "description": "Scenario: Map-reduce chunking for large content exceeding chunk size"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_chunked_summary_vector1_strictly_less_than_limit",
+          "line_number": 337,
+          "description": "MC/DC Vector 1: len(content) < chunk_chars -> Single pass directly."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_chunked_summary_vector2_exact_boundary_len_eq_chunk_chars",
+          "line_number": 349,
+          "description": "MC/DC Vector 2: Boundary len(content) == chunk_chars -> Single pass directly."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_chunked_summary_vector3_boundary_len_plus_one_triggers_multipass",
+          "line_number": 361,
+          "description": "MC/DC Vector 3: Boundary len(content) == chunk_chars + 1 -> Multi-pass triggered."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_chunked_summary_vector4_single_chunk_after_partition_bypasses_synthesis",
+          "line_number": 381,
+          "description": "MC/DC Vector 4: len(content) > chunk_chars BUT partition produces exactly 1 chunk"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_partition_chunks_vector1_overflow_with_existing_chunk",
+          "line_number": 402,
+          "description": "MC/DC Vector 1: Overflow=True, CurrentChunk=True -> Flushes chunk, starts new chunk."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_partition_chunks_vector2_overflow_with_empty_chunk",
+          "line_number": 413,
+          "description": "MC/DC Vector 2: Overflow=True, CurrentChunk=False -> Line alone exceeds chunk_chars."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_partition_chunks_vector3_fits_with_existing_chunk",
+          "line_number": 429,
+          "description": "MC/DC Vector 3: Overflow=False, CurrentChunk=True -> Appends to existing chunk."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_mcdc_partition_chunks_vector4_empty_input",
+          "line_number": 438,
+          "description": "MC/DC Vector 4: Empty input content string -> Returns empty list."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_hypothesis_partition_lossless_characters_and_lines_invariant",
+          "line_number": 507,
+          "description": "Property: For ANY arbitrary text (unicode, multiline, empty, whitespace) and any chunk_chars >= 1,"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_hypothesis_partition_never_cuts_lines_invariant",
+          "line_number": 528,
+          "description": "Property: Lines are never cut in half when lines fit within chunk_chars."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_hypothesis_partition_single_chunk_under_limit",
+          "line_number": 555,
+          "description": "Property: If len(content) <= chunk_chars, partition_chunks must yield at most 1 chunk."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_partition_chunks_multiline_join_and_boundary",
+          "line_number": 411,
+          "description": "Kill mutant _partition_chunks__mutmut_25 (\"XXXX\".join) and chunk size validation."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_local_chunked_summary_map_reduce_exact",
+          "line_number": 431,
+          "description": "Kill mutants in local_chunked_summary: synthesis prompt, headers, system prompt."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_local_chunked_summary_small_content",
+          "line_number": 123,
+          "description": "Small content under chunk_chars should call local_summarize_and_extract directly."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_local_chunked_summary_large_content",
+          "line_number": 132,
+          "description": "Large content exceeding chunk_chars should chunk and synthesize."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-005",
+      "title": "Strict Structured JSON Extraction",
+      "safety_level": "STANDARD",
+      "description": "The system shall extract structured data matching a target schema from unstructured input using temperature <= 0.1 and strict JSON output constraints.",
+      "acceptance_criteria": [
+        "Instructs model to output only valid JSON without external markdown commentary.",
+        "Applies low temperature (0.1) for deterministic schema conformity."
+      ],
+      "specification_feature": "features/json_extraction.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/engine.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 4,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_extract_json_gherkin_scenario",
+          "line_number": 450,
+          "description": "Given unstructured text \"Server started at port 8080 with worker count 4\""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_engine.py",
+          "relative_file": "tests/test_engine.py",
+          "function": "test_extract_json_temperature_always_0_1_regardless_of_defaults",
+          "line_number": 489,
+          "description": "Verifies that temperature 0.1 is enforced deterministically for schema conformity."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_engine_local_extract_json_exact_prompts_and_markdown_stripping",
+          "line_number": 464,
+          "description": "Kill mutants in local_extract_json: system prompt, schema formatting, code fence stripping."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_local_extract_json",
+          "line_number": 114,
+          "description": "Test local_extract_json system prompt and temperature."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-006",
+      "title": "Model Inventory & Status Enumeration",
+      "safety_level": "STANDARD",
+      "description": "The system shall query the Ollama /api/tags endpoint and return a human-readable inventory of models including parameter size, quantization level, file size in GB, and active default model.",
+      "acceptance_criteria": [
+        "Parses /api/tags JSON response and calculates size in gigabytes rounded to 2 decimals.",
+        "Formats each model with name, parameter count, quantization, and disk size.",
+        "Indicates currently active default model.",
+        "Returns graceful error message if Ollama is unreachable."
+      ],
+      "specification_feature": "features/model_inventory.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/client.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 32,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_format_bytes_to_gb_spec_vector",
+          "line_number": 114,
+          "description": "Verify exact byte conversion from specification feature: 8988112209 -> '8.37 GB'."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_format_bytes_to_gb_boundary_zero",
+          "line_number": 122,
+          "description": "Verify 0 bytes formats correctly to '0.00 GB'."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_format_bytes_to_gb_exact_gib",
+          "line_number": 128,
+          "description": "Verify exact powers of 2 (1 GiB, 10 GiB) formatting."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_format_bytes_to_gb_fractional_rounding",
+          "line_number": 137,
+          "description": "Verify standard round-half-even behavior on fractional sizes."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_parse_model_inventory_deepseek_spec",
+          "line_number": 144,
+          "description": "Verify BDD scenario: Given deepseek-r1:14b with 8988112209 bytes, parses size, params, quant."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_parse_model_inventory_multiple_models_with_active_default",
+          "line_number": 171,
+          "description": "Verify inventory with multiple models identifies active default model and counts."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_parse_model_inventory_missing_optional_details",
+          "line_number": 196,
+          "description": "Verify fallback to 'unknown' when model payload lacks details or fields."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_parse_model_inventory_empty_list",
+          "line_number": 224,
+          "description": "Verify graceful handling when /api/tags returns empty models list."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_inventory_connection_error_graceful_handling",
+          "line_number": 244,
+          "description": "Verify ConnectionError returns a human-readable error message without uncaught exception."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_inventory_timeout_error_graceful_handling",
+          "line_number": 255,
+          "description": "Verify Timeout returns a graceful error message indicating timeout."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_inventory_http_4xx_error_handling",
+          "line_number": 266,
+          "description": "Verify HTTP 404/4xx error is captured with status code and error details."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_inventory_http_5xx_error_handling",
+          "line_number": 282,
+          "description": "Verify HTTP 500/5xx error is captured gracefully with status code."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_model_resolution_vector_1_explicit",
+          "line_number": 425,
+          "description": "MC/DC Vector 1: C1=True, C2=True, C3=True -> Outcome: Explicit Model."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_model_resolution_vector_2_configured_env",
+          "line_number": 434,
+          "description": "MC/DC Vector 2: C1=False, C2=True, C3=True -> Outcome: Configured Model (Isolates C1)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_model_resolution_vector_3_autodetect",
+          "line_number": 443,
+          "description": "MC/DC Vector 3: C1=False, C2=False, C3=True -> Outcome: Auto-detected Model (Isolates C2)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_model_resolution_vector_4_fallback",
+          "line_number": 452,
+          "description": "MC/DC Vector 4: C1=False, C2=False, C3=False -> Outcome: Fallback Default (Isolates C3)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_details_vector_5_all_present",
+          "line_number": 467,
+          "description": "MC/DC Vector 5: C4=True, C5=True, C6=True -> Full parameters extracted."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_details_vector_6_missing_params",
+          "line_number": 479,
+          "description": "MC/DC Vector 6: C4=True, C5=False, C6=True -> params='unknown', quant='Q4_0' (Isolates C5)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_details_vector_7_missing_quant",
+          "line_number": 491,
+          "description": "MC/DC Vector 7: C4=True, C5=True, C6=False -> params='7B', quant='unknown' (Isolates C6)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_details_vector_8_missing_details_dict",
+          "line_number": 503,
+          "description": "MC/DC Vector 8: C4=False -> params='unknown', quant='unknown' (Isolates C4)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_hypothesis_format_bytes_to_gb_properties",
+          "line_number": 581,
+          "description": "Property test: For all non-negative integers, format_bytes_to_gb conforms to schema and bounds."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_hypothesis_format_bytes_monotonic",
+          "line_number": 612,
+          "description": "Property test: format_bytes_to_gb is monotonically non-decreasing."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_hypothesis_format_bytes_exact_spec_invariance",
+          "line_number": 628,
+          "description": "Property test: Invariance of the specific benchmark test vector from model_inventory.feature."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_client_generic_exception_in_available_models",
+          "line_number": 24,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_client_list_models_non_dict_element_ignored",
+          "line_number": 33,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_client_local_list_models_default_client",
+          "line_number": 100,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_init_and_default_attributes",
+          "line_number": 195,
+          "description": "Kill mutants in OllamaClient.__init__: host, timeout, configured_model, _last_error."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_format_bytes_to_gb_exact_values",
+          "line_number": 216,
+          "description": "Kill mutants in format_bytes_to_gb: rounding, power of 1024, suffix."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_get_available_models_call_contract",
+          "line_number": 226,
+          "description": "Kill mutants in get_available_models: exact URL, timeout, and state."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_list_models_dataclass_fields",
+          "line_number": 242,
+          "description": "Kill mutants in list_models: ModelInfo field assignments and default detection."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_get_available_models_error_messages",
+          "line_number": 493,
+          "description": "Kill mutants in OllamaClient error message formatting."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_list_models_unknown_fallbacks",
+          "line_number": 612,
+          "description": "Kill mutants in list_models default fallback values for name, size, details."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-007",
+      "title": "Memory Pre-warming & Keep-Alive",
+      "safety_level": "STANDARD",
+      "description": "The system shall issue a keep_alive = -1 request to the Ollama endpoint to pin the specified model in memory and eliminate cold-start latency.",
+      "acceptance_criteria": [
+        "Sends payload with model and keep_alive: -1 to /api/generate.",
+        "Returns success message on HTTP 200.",
+        "Returns error string on network or HTTP failure."
+      ],
+      "specification_feature": "features/model_inventory.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/client.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 16,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_explicit_model_payload_and_endpoint",
+          "line_number": 302,
+          "description": "Verify BDD scenario: POST /api/generate with keep_alive=-1 and explicit target model."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_empty_model_uses_resolved_default",
+          "line_number": 323,
+          "description": "Verify prewarm with empty model parameter resolves to active default model."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_keep_alive_constant_is_strict_negative_one",
+          "line_number": 342,
+          "description": "Verify keep_alive is strictly integer -1 (not True, not float, not string)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_connection_error_graceful_handling",
+          "line_number": 364,
+          "description": "Verify prewarm returns error string on ConnectionError without crash."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_timeout_error_graceful_handling",
+          "line_number": 374,
+          "description": "Verify prewarm returns error string on Timeout."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_http_4xx_error_handling",
+          "line_number": 384,
+          "description": "Verify prewarm returns error string with HTTP 404 (model not found)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_prewarm_http_5xx_error_handling",
+          "line_number": 399,
+          "description": "Verify prewarm returns error string with HTTP 503 (server overloaded)."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_network_vector_9_success_200",
+          "line_number": 523,
+          "description": "MC/DC Vector 9: E1=True -> Success confirmation."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_network_vector_10_conn_error",
+          "line_number": 533,
+          "description": "MC/DC Vector 10: E2=True -> Connection error handled."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_network_vector_11_timeout_error",
+          "line_number": 543,
+          "description": "MC/DC Vector 11: E3=True -> Timeout error handled."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_network_vector_12_client_4xx",
+          "line_number": 553,
+          "description": "MC/DC Vector 12: E4=True -> HTTP 400/404 handled with status code."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_client.py",
+          "relative_file": "tests/test_client.py",
+          "function": "test_mcdc_network_vector_13_server_5xx",
+          "line_number": 564,
+          "description": "MC/DC Vector 13: E5=True -> HTTP 500/502 handled with status code."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_client_prewarm_exception_branches",
+          "line_number": 42,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_coverage_completion.py",
+          "relative_file": "tests/test_coverage_completion.py",
+          "function": "test_client_local_prewarm_model_default_client",
+          "line_number": 107,
+          "description": ""
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_prewarm_model_call_contract",
+          "line_number": 288,
+          "description": "Kill mutants in prewarm_model: URL, keep_alive=-1, payload, timeout, output text."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_client_prewarm_model_error_messages",
+          "line_number": 537,
+          "description": "Kill mutants in prewarm_model error message formatting."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-008",
+      "title": "MCP Protocol STDIO Cleanliness & Isolation",
+      "safety_level": "CRITICAL",
+      "description": "The system shall communicate strictly via JSON-RPC 2.0 over standard I/O (STDIO) transport, routing all internal logging, warnings, and diagnostic telemetry exclusively to stderr.",
+      "acceptance_criteria": [
+        "Stdout stream contains only valid JSON-RPC 2.0 messages.",
+        "Stderr stream handles all log output without polluting stdout.",
+        "Responds to initialize, notifications/initialized, tools/list, and tools/call."
+      ],
+      "specification_feature": "features/protocol_isolation.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/server.py",
+        "src/ollama_bridge/config.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 6,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_config_logging_attributes_and_defaults",
+          "line_number": 78,
+          "description": "Kill logging mutants: name, level, handlers, formatter, stream, propagate."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_ollama_bridge.py",
+          "relative_file": "tests/test_ollama_bridge.py",
+          "function": "test_mcp_stdio_handshake_and_tools",
+          "line_number": 142,
+          "description": "Test full MCP STDIO JSON-RPC handshake and tools enumeration."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_protocol_isolation_logging_routes_exclusively_to_stderr",
+          "line_number": 383,
+          "description": "Scenario: Logging output is routed to standard error"
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_resolution.py",
+          "relative_file": "tests/test_resolution.py",
+          "function": "test_protocol_isolation_no_stdout_pollution_during_resolution",
+          "line_number": 408,
+          "description": "Model resolution must never write debug or print statements to stdout."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_server.py",
+          "relative_file": "tests/test_server.py",
+          "function": "test_server_tools_delegation",
+          "line_number": 18,
+          "description": "Verify server tools properly delegate to underlying engine and client modules."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_server.py",
+          "relative_file": "tests/test_server.py",
+          "function": "test_server_main_entrypoint",
+          "line_number": 47,
+          "description": "Verify server.main() calls mcp.run(transport='stdio')."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    }
+  ]
+}

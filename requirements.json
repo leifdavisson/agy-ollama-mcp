@@ -1,0 +1,93 @@
+[
+  {
+    "id": "REQ-001",
+    "title": "Deterministic Model Resolution",
+    "safety_level": "CRITICAL",
+    "description": "The system shall resolve the execution model according to strict precedence: (1) explicit tool argument, (2) LOCAL_LLM_MODEL environment variable, (3) auto-detected preferred model from Ollama /api/tags, and (4) default fallback 'qwen2.5-coder:14b'.",
+    "acceptance_criteria": [
+      "Explicit argument overrides environment variable and auto-detection.",
+      "Non-empty LOCAL_LLM_MODEL overrides auto-detection when no explicit argument is provided.",
+      "Auto-detection selects preferred coder model if available.",
+      "System falls back to default model if API call fails or no tags exist."
+    ]
+  },
+  {
+    "id": "REQ-002",
+    "title": "Local Code Drafting Execution",
+    "safety_level": "CRITICAL",
+    "description": "The system shall format and dispatch code drafting prompts to the local Ollama /api/generate endpoint with a specialized software engineering system prompt, returning generated code strings.",
+    "acceptance_criteria": [
+      "Formats prompt containing language, context, and task description.",
+      "Enforces system prompt instructing clean, modular production code.",
+      "Returns Ollama response content on HTTP 200.",
+      "Returns descriptive error string on connection or HTTP failure."
+    ]
+  },
+  {
+    "id": "REQ-003",
+    "title": "Dense Summarization & Noise Extraction",
+    "safety_level": "CRITICAL",
+    "description": "The system shall compress raw text, logs, or traces into high-density technical summaries matching a specified extraction goal using temperature <= 0.2.",
+    "acceptance_criteria": [
+      "Constructs extraction prompt containing target goal and content.",
+      "Instructs model to remove noise, boilerplate, and repetitive lines.",
+      "Returns distilled summary without conversational filler."
+    ]
+  },
+  {
+    "id": "REQ-004",
+    "title": "Chunked Map-Reduce Summarization",
+    "safety_level": "CRITICAL",
+    "description": "The system shall partition content exceeding chunk_chars on line boundaries, generate intermediate chunk summaries, and synthesize the result into a unified report.",
+    "acceptance_criteria": [
+      "Executes single-pass extraction when content length <= chunk_chars.",
+      "Partitions content into line-delimited chunks when content length > chunk_chars.",
+      "Synthesizes intermediate chunk summaries into unified final report.",
+      "Maintains order and avoids chunk boundary truncation."
+    ]
+  },
+  {
+    "id": "REQ-005",
+    "title": "Strict Structured JSON Extraction",
+    "safety_level": "STANDARD",
+    "description": "The system shall extract structured data matching a target schema from unstructured input using temperature <= 0.1 and strict JSON output constraints.",
+    "acceptance_criteria": [
+      "Instructs model to output only valid JSON without external markdown commentary.",
+      "Applies low temperature (0.1) for deterministic schema conformity."
+    ]
+  },
+  {
+    "id": "REQ-006",
+    "title": "Model Inventory & Status Enumeration",
+    "safety_level": "STANDARD",
+    "description": "The system shall query the Ollama /api/tags endpoint and return a human-readable inventory of models including parameter size, quantization level, file size in GB, and active default model.",
+    "acceptance_criteria": [
+      "Parses /api/tags JSON response and calculates size in gigabytes rounded to 2 decimals.",
+      "Formats each model with name, parameter count, quantization, and disk size.",
+      "Indicates currently active default model.",
+      "Returns graceful error message if Ollama is unreachable."
+    ]
+  },
+  {
+    "id": "REQ-007",
+    "title": "Memory Pre-warming & Keep-Alive",
+    "safety_level": "STANDARD",
+    "description": "The system shall issue a keep_alive = -1 request to the Ollama endpoint to pin the specified model in memory and eliminate cold-start latency.",
+    "acceptance_criteria": [
+      "Sends payload with model and keep_alive: -1 to /api/generate.",
+      "Returns success message on HTTP 200.",
+      "Returns error string on network or HTTP failure."
+    ]
+  },
+  {
+    "id": "REQ-008",
+    "title": "MCP Protocol STDIO Cleanliness & Isolation",
+    "safety_level": "CRITICAL",
+    "description": "The system shall communicate strictly via JSON-RPC 2.0 over standard I/O (STDIO) transport, routing all internal logging, warnings, and diagnostic telemetry exclusively to stderr.",
+    "acceptance_criteria": [
+      "Stdout stream contains only valid JSON-RPC 2.0 messages.",
+      "Stderr stream handles all log output without polluting stdout.",
+      "Responds to initialize, notifications/initialized, tools/list, and tools/call."
+    ]
+  }
+]

@@ -2,11 +2,13 @@
 Unit and Integration tests for Ollama MCP Bridge.
 Tests cover model resolution, query formatting, tool definitions,
 and JSON-RPC STDIO transport.
+License: GNU AGPLv3
 """
 import json
 import os
 import subprocess
 import sys
+from typing import Any, Callable
 from unittest.mock import patch, MagicMock
 import pytest
 
@@ -16,12 +18,25 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import ollama_mcp_bridge as bridge
 
 
+def verifies(req_id: str) -> Callable[[Any], Any]:
+    """Decorator linking test to functional requirement ID for AST RTM parser."""
+    def decorator(fn: Any) -> Any:
+        if not hasattr(fn, "_verifies"):
+            fn._verifies = []
+        fn._verifies.append(req_id)
+        setattr(fn, "__req_id__", req_id)
+        return fn
+    return decorator
+
+
+@verifies("REQ-001")
 def test_resolve_model_explicit():
     """Explicit requested model should always take precedence."""
     resolved = bridge.resolve_model("custom-model:latest")
     assert resolved == "custom-model:latest"
 
 
+@verifies("REQ-001")
 def test_resolve_model_from_env(monkeypatch):
     """LOCAL_LLM_MODEL env var should be respected if set."""
     monkeypatch.setattr(bridge, "CONFIGURED_MODEL", "env-model:7b")
@@ -29,6 +44,7 @@ def test_resolve_model_from_env(monkeypatch):
     assert resolved == "env-model:7b"
 
 
+@verifies("REQ-001")
 def test_resolve_model_autodetect(monkeypatch):
     """Auto-detect should pick coding models from available tags."""
     monkeypatch.setattr(bridge, "CONFIGURED_MODEL", "")
@@ -41,6 +57,7 @@ def test_resolve_model_autodetect(monkeypatch):
         assert resolved == "qwen2.5-coder:14b"
 
 
+@verifies("REQ-002")
 def test_query_ollama_success():
     """Test successful query response handling."""
     mock_resp = MagicMock()
@@ -52,6 +69,7 @@ def test_query_ollama_success():
         assert "def add" in res
 
 
+@verifies("REQ-002")
 def test_query_ollama_connection_error():
     """Test graceful handling of Ollama connection errors."""
     import requests
@@ -60,6 +78,7 @@ def test_query_ollama_connection_error():
         assert "Unable to connect to Ollama" in res
 
 
+@verifies("REQ-002")
 def test_local_draft_code_formatting():
     """Test prompt assembly in local_draft_code."""
     with patch.object(bridge, "query_ollama", return_value="class User: pass") as mock_query:
@@ -76,6 +95,7 @@ def test_local_draft_code_formatting():
         assert "Create User class" in prompt
 
 
+@verifies("REQ-003")
 def test_local_summarize_and_extract_formatting():
     """Test prompt assembly in local_summarize_and_extract."""
     with patch.object(bridge, "query_ollama", return_value="Timeout at line 42") as mock_query:
@@ -90,6 +110,7 @@ def test_local_summarize_and_extract_formatting():
         assert "Full log file content" in prompt
 
 
+@verifies("REQ-005")
 def test_local_extract_json():
     """Test local_extract_json system prompt and temperature."""
     with patch.object(bridge, "query_ollama", return_value='{"status": "ok"}') as mock_query:
@@ -98,6 +119,7 @@ def test_local_extract_json():
         assert mock_query.call_args[1].get("temperature") == 0.1
 
 
+@verifies("REQ-004")
 def test_local_chunked_summary_small_content():
     """Small content under chunk_chars should call local_summarize_and_extract directly."""
     with patch.object(bridge, "local_summarize_and_extract", return_value="Short summary") as mock_sub:
@@ -106,6 +128,7 @@ def test_local_chunked_summary_small_content():
         assert mock_sub.call_count == 1
 
 
+@verifies("REQ-004")
 def test_local_chunked_summary_large_content():
     """Large content exceeding chunk_chars should chunk and synthesize."""
     large_content = ("Line of log data that is repeating.\n" * 100)
@@ -115,15 +138,22 @@ def test_local_chunked_summary_large_content():
         assert res == "Final synthesized summary"
 
 
+@verifies("REQ-008")
 def test_mcp_stdio_handshake_and_tools():
     """Test full MCP STDIO JSON-RPC handshake and tools enumeration."""
-    bridge_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ollama_mcp_bridge.py"))
+    bridge_path = "/data/agy_ollama_mcp/ollama_mcp_bridge.py"
+    env = dict(os.environ)
+    src_dir = "/data/agy_ollama_mcp/src"
+    root_dir = "/data/agy_ollama_mcp"
+    env["PYTHONPATH"] = f"{src_dir}:{root_dir}:{env.get('PYTHONPATH', '')}"
     proc = subprocess.Popen(
         [sys.executable, bridge_path],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        env=env,
+        cwd=root_dir,
     )
 
     try:
