@@ -136,7 +136,7 @@ def build_rtm(
     all_verifying_functions = set()
     for t_list in ast_test_map.values():
         for t in t_list:
-            all_verifying_functions.add(f"{t["relative_file"]}::{t["function"]}")
+            all_verifying_functions.add(f"{t['relative_file']}::{t['function']}")
 
     rtm_data = {
         "version": "1.0.0",
@@ -173,14 +173,14 @@ def main() -> None:
     print("=" * 80)
     print(" REQUIREMENTS TRACEABILITY MATRIX GENERATION SUMMARY")
     print("=" * 80)
-    print(f" Total Requirements Formalized: {summary["total_requirements"]}")
-    print(f" Requirements Verified:         {summary["verified_requirements"]} ({summary["coverage_percentage"]}%)")
-    print(f" Uncovered Requirements:        {summary["uncovered_requirements_count"]}")
-    print(f" AST Verified Test Functions:   {summary["total_verifying_tests_ast"]}")
-    print(f" Orphaned Test Functions:       {summary["orphaned_tests_count"]}")
-    print(f" Statement Coverage:            {summary["statement_coverage_percentage"]} %")
-    print(f" Branch Coverage:               {summary["branch_coverage_percentage"]} %")
-    print(f" Mutation Kill Score:           {summary["mutation_score_percentage"]} %")
+    print(f" Total Requirements Formalized: {summary['total_requirements']}")
+    print(f" Requirements Verified:         {summary['verified_requirements']} ({summary['coverage_percentage']}%)")
+    print(f" Uncovered Requirements:        {summary['uncovered_requirements_count']}")
+    print(f" AST Verified Test Functions:   {summary['total_verifying_tests_ast']}")
+    print(f" Orphaned Test Functions:       {summary['orphaned_tests_count']}")
+    print(f" Statement Coverage:            {summary['statement_coverage_percentage']} %")
+    print(f" Branch Coverage:               {summary['branch_coverage_percentage']} %")
+    print(f" Mutation Kill Score:           {summary['mutation_score_percentage']} %")
     print("=" * 80)
     print(f"Successfully generated RTM matrix: {output_file}")
 
