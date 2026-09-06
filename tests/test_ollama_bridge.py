@@ -140,11 +140,11 @@ def test_local_chunked_summary_large_content():
 
 @verifies("REQ-008")
 def test_mcp_stdio_handshake_and_tools():
-    """Test full MCP STDIO JSON-RPC handshake and tools enumeration."""
-    bridge_path = "/data/agy_ollama_mcp/ollama_mcp_bridge.py"
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    bridge_path = os.path.join(repo_root, "ollama_mcp_bridge.py")
     env = dict(os.environ)
-    src_dir = "/data/agy_ollama_mcp/src"
-    root_dir = "/data/agy_ollama_mcp"
+    src_dir = os.path.join(repo_root, "src")
+    root_dir = repo_root
     env["PYTHONPATH"] = f"{src_dir}:{root_dir}:{env.get('PYTHONPATH', '')}"
     proc = subprocess.Popen(
         [sys.executable, bridge_path],
