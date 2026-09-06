@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agy-ollama-mcp"
+version = "1.0.0"
+description = "Ollama MCP Bridge for Google Antigravity CLI (agy) - Tiered Edge-Cloud Architecture"
+readme = "README.md"
+authors = [
+    { name = "Leif Davisson" }
+]
+license = { text = "GNU AGPLv3" }
+dependencies = [
+    "mcp>=2.0.0",
+    "requests>=2.31.0"
+]
+requires-python = ">=3.10"
+
+[project.scripts]
+ollama-mcp-bridge = "ollama_mcp_bridge:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
