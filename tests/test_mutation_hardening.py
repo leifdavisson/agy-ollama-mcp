@@ -47,10 +47,13 @@ from ollama_bridge.config import (
     configure_logging,
 )
 from ollama_bridge.engine import (
+    chunk_lines_overlap,
     local_chunked_summary,
     local_draft_code,
     local_extract_json,
+    local_map_reduce_file,
     local_summarize_and_extract,
+    map_worker,
     partition_chunks,
     query_ollama,
 )
@@ -634,3 +637,78 @@ def test_client_resolve_model_delegation_to_available_models():
 
     # When requested_model is explicitly given
     assert c.resolve_model("custom-explicit:7b") == "custom-explicit:7b"
+
+
+@verifies("REQ-009")
+def test_chunk_lines_overlap_mutation_hardening():
+    """Kill mutants in chunk_lines_overlap step calculation and boundary conditions."""
+    lines = ["a\n", "b\n", "c\n", "d\n", "e\n"]
+    # default chunk_size=400, overlap=50
+    chunks = chunk_lines_overlap(lines)
+    assert len(chunks) == 1
+    assert chunks[0] == "a\nb\nc\nd\ne\n"
+
+    # step = max(1, chunk_size - overlap)
+    # when chunk_size=3, overlap=2, step=1
+    chunks_s1 = chunk_lines_overlap(lines, chunk_size=3, overlap=2)
+    # i=0: a,b,c; i=1: b,c,d; i=2: c,d,e (2+3=5 >= 5 -> break)
+    assert len(chunks_s1) == 3
+    assert chunks_s1[0] == "a\nb\nc\n"
+    assert chunks_s1[1] == "b\nc\nd\n"
+    assert chunks_s1[2] == "c\nd\ne\n"
+
+    # step = chunk_size when overlap=0
+    chunks_s3 = chunk_lines_overlap(lines, chunk_size=2, overlap=0)
+    # i=0: a,b; i=2: c,d; i=4: e (4+2=6 >= 5 -> break)
+    assert len(chunks_s3) == 3
+    assert chunks_s3[0] == "a\nb\n"
+    assert chunks_s3[1] == "c\nd\n"
+    assert chunks_s3[2] == "e\n"
+
+
+@verifies("REQ-009")
+def test_map_worker_and_reduce_prompt_mutations(tmp_path):
+    """Kill mutants in map_worker and local_map_reduce_file prompt structure and constants."""
+    # map_worker exact prompts
+    with patch("ollama_bridge.engine.query_ollama", return_value="out") as mock_q:
+        res = map_worker("test chunk", "test goal", model="test:m")
+        assert res == "out"
+        args, kwargs = mock_q.call_args
+        prompt = args[0] if args else kwargs["prompt"]
+        assert prompt == "GOAL:\ntest goal\n\nCONTENT:\ntest chunk\n\nFINDINGS:"
+        assert kwargs["model"] == "test:m"
+        assert kwargs["temperature"] == 0.1
+        sys_p = kwargs["system"]
+        assert "You are a dense extraction and noise-filtering engine." in sys_p
+        assert "Discard routine status output, boilerplate, and successful operation logs." in sys_p
+        assert "Extract ONLY items directly relevant to the user's extraction goal." in sys_p
+        assert "Format output as concise bullet points with timestamps, identifiers, or line contexts if present." in sys_p
+        assert "If a chunk contains zero relevant information, reply with exactly: 'NO_SIGNAL'." in sys_p
+
+    # local_map_reduce_file with concurrency <= 0 mutated
+    test_f = tmp_path / "multi.log"
+    test_f.write_text("line 1\nline 2\nline 3\nline 4\nline 5\n")
+    with patch("ollama_bridge.engine.map_worker", return_value="Findings 1"), \
+         patch("ollama_bridge.engine.query_ollama", return_value="Final Brief") as mock_reduce:
+        res = local_map_reduce_file(
+            str(test_f),
+            extraction_goal="my goal",
+            chunk_size=2,
+            overlap=1,
+            concurrency=0,  # should be clamped to max(1, concurrency)
+            model="model:x",
+        )
+        assert res == "Final Brief"
+        args, kwargs = mock_reduce.call_args
+        prompt = args[0] if args else kwargs["prompt"]
+        assert "PRIMARY OBJECTIVE: my goal" in prompt
+        assert "INTERMEDIATE CHUNK EXTRACTIONS:" in prompt
+        assert "TASK:" in prompt
+        assert "Synthesize these findings into a unified, actionable technical summary." in prompt
+        assert "Highlight root causes, frequencies, key identifiers, and affected modules." in prompt
+        sys_p = kwargs["system"]
+        assert "You are an executive technical synthesizer." in sys_p
+        assert "Deduplicate repeated errors, identify global sequences, and prioritize critical failures." in sys_p
+        assert kwargs["temperature"] == 0.1
+        assert kwargs["model"] == "model:x"
+

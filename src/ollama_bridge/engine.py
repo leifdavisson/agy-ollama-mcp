@@ -8,7 +8,9 @@ License: GNU AGPLv3
 """
 from __future__ import annotations
 
+import concurrent.futures
 import logging
+import os
 from typing import Any, Dict, List, Optional
 import requests
 
@@ -194,3 +196,134 @@ def local_extract_json(
     )
     prompt = f"Target Schema / Fields:\n{schema_description}\n\nContent:\n{content}"
     return query_ollama(prompt=prompt, system=system, model=model, temperature=0.1)
+
+
+def chunk_lines_overlap(
+    lines: List[str],
+    chunk_size: int = 400,
+    overlap: int = 50,
+) -> List[str]:
+    """
+    Slice lines into overlapping chunks preserving line boundaries.
+    REQ-009: Overlap lines ensure context continuity across chunk boundaries.
+    """
+    if chunk_size <= 0:
+        raise ValueError("chunk_size must be positive")
+    if overlap < 0:
+        raise ValueError("overlap must be non-negative")
+    if overlap >= chunk_size:
+        raise ValueError("overlap must be less than chunk_size")
+    if not lines:
+        return []
+
+    chunks: List[str] = []
+    step = max(1, chunk_size - overlap)
+    total_lines = len(lines)
+    i = 0
+
+    while i < total_lines:
+        chunk_slice = lines[i : i + chunk_size]
+        chunks.append("".join(chunk_slice))
+        if i + chunk_size >= total_lines:
+            i = total_lines
+        else:
+            i += step
+
+    return chunks
+
+
+def map_worker(
+    chunk: str,
+    goal: str,
+    model: str = "",
+) -> str:
+    """Map Step: Extracts targeted signal from an individual chunk."""
+    sys_prompt = (
+        "You are a dense extraction and noise-filtering engine. "
+        "Discard routine status output, boilerplate, and successful operation logs. "
+        "Extract ONLY items directly relevant to the user's extraction goal. "
+        "Format output as concise bullet points with timestamps, identifiers, or line contexts if present. "
+        "If a chunk contains zero relevant information, reply with exactly: 'NO_SIGNAL'."
+    )
+    prompt = f"GOAL:\n{goal}\n\nCONTENT:\n{chunk}\n\nFINDINGS:"
+    return query_ollama(prompt, system=sys_prompt, model=model, temperature=0.1)
+
+
+def local_map_reduce_file(
+    file_path: str,
+    extraction_goal: str,
+    chunk_size: int = 400,
+    overlap: int = 50,
+    concurrency: int = 2,
+    model: str = "",
+) -> str:
+    """
+    Compress large files, traces, or logs using local Ollama Map-Reduce before ingesting into context.
+    REQ-009: File-direct execution avoiding JSON-RPC STDIO payload inflation.
+    """
+    resolved_path = os.path.expanduser(file_path)
+    if not os.path.isabs(resolved_path):
+        resolved_path = os.path.abspath(resolved_path)
+
+    if not os.path.exists(resolved_path):
+        return f"Error: File '{file_path}' does not exist."
+    if os.path.isdir(resolved_path):
+        return f"Error: Path '{file_path}' is a directory, not a file."
+
+    with open(resolved_path, "r", encoding="utf-8", errors="replace") as f:
+        lines = f.readlines()
+
+    if not lines:
+        return "File is empty."
+
+    if len(lines) <= chunk_size:
+        return query_ollama(
+            f"GOAL: {extraction_goal}\n\nCONTENT:\n{''.join(lines)}",
+            system="Provide a dense technical extraction matching the goal. Omit boilerplate.",
+            model=model,
+            temperature=0.1,
+        )
+
+    chunks = chunk_lines_overlap(lines, chunk_size=chunk_size, overlap=overlap)
+
+    active_concurrency = max(1, concurrency)
+    mapped_results: List[str] = [""] * len(chunks)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=active_concurrency) as executor:
+        futures = {
+            executor.submit(map_worker, c, extraction_goal, model): idx
+            for idx, c in enumerate(chunks)
+        }
+        for fut in concurrent.futures.as_completed(futures):
+            idx = futures[fut]
+            res = fut.result()
+            if "NO_SIGNAL" not in res and res.strip():
+                mapped_results[idx] = res
+
+    filtered = [s for s in mapped_results if s.strip()]
+    if not filtered:
+        return f"No signal matching '{extraction_goal}' found across {len(chunks)} chunks."
+
+    intermediate_context = "\n\n".join(
+        [f"### Findings Section {i + 1}\n{s}" for i, s in enumerate(filtered)]
+    )
+
+    reduce_prompt = (
+        f"PRIMARY OBJECTIVE: {extraction_goal}\n\n"
+        f"INTERMEDIATE CHUNK EXTRACTIONS:\n"
+        f"{intermediate_context}\n\n"
+        "TASK:\n"
+        "Synthesize these findings into a unified, actionable technical summary. "
+        "Highlight root causes, frequencies, key identifiers, and affected modules."
+    )
+    reduce_system = (
+        "You are an executive technical synthesizer. Your job is to consolidate multiple "
+        "partial extraction notes into a single cohesive, high-density diagnostic brief. "
+        "Deduplicate repeated errors, identify global sequences, and prioritize critical failures."
+    )
+    return query_ollama(
+        reduce_prompt,
+        system=reduce_system,
+        model=model,
+        temperature=0.1,
+    )

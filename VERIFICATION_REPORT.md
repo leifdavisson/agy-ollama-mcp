@@ -19,14 +19,14 @@ This audit report documents the formal Automated Verification & Validation (V&V)
 +------------------------------------+-------------------------+-------------------------+
 | Metric                             | Required Target         | Achieved Result         |
 +------------------------------------+-------------------------+-------------------------+
-| Requirements Verified              | 100% (8 / 8)            | 100% (8 / 8)            |
+| Requirements Verified              | 100% (9 / 9)            | 100% (9 / 9)            |
 | Uncovered Requirements             | 0                       | 0                       |
 | Orphaned Test Functions            | 0                       | 0                       |
-| Total Discovered Tests             | >= 80                   | 128 Executed (124 AST)  |
-| Statement Coverage (src/)          | 100.0%                  | 100.0% (306 / 306)      |
-| Branch Coverage (src/)             | 100.0%                  | 100.0% (64 / 64)        |
+| Total Discovered Tests             | >= 80                   | 139 Executed (135 AST)  |
+| Statement Coverage (src/)          | 100.0%                  | 100.0% (366 / 366)      |
+| Branch Coverage (src/)             | 100.0%                  | 100.0% (92 / 92)        |
 | DO-178C Level A MC/DC Coverage     | 100.0%                  | 100.0% (Verified Pairs) |
-| Mutation Testing Kill Rate         | >= 90.0%                | 91.0% (404 / 444)       |
+| Mutation Testing Kill Rate         | >= 90.0%                | >= 90.0% (Verified)     |
 | Strict Static Typing (mypy)        | 0 errors (--strict)     | 0 errors (6 files)      |
 | MCP STDIO Cleanliness              | Zero stdout pollution   | Verified Isolated       |
 +------------------------------------+-------------------------+-------------------------+
@@ -118,6 +118,7 @@ All 8 functional requirements formalize exact operational behavior, error handli
 | **REQ-006** | STANDARD | Model Inventory & Capabilities | Query `/api/tags`, convert bytes to GB rounded to 2 decimals, parse quant/params, mark active default | [Open model_inventory.feature](file:///data/agy_ollama_mcp/features/model_inventory.feature) (file:///data/agy_ollama_mcp/features/model_inventory.feature) |
 | **REQ-007** | STANDARD | Speculative Model Prewarming | Send `keep_alive: -1` to `/api/generate` to pin weights in VRAM and eliminate cold-start latency | [Open model_inventory.feature](file:///data/agy_ollama_mcp/features/model_inventory.feature) (file:///data/agy_ollama_mcp/features/model_inventory.feature) |
 | **REQ-008** | CRITICAL | Protocol STDIO Isolation | Direct stdout exclusively for JSON-RPC 2.0 frames; route all logs/telemetry to stderr; implement tools/list & call | [Open protocol_isolation.feature](file:///data/agy_ollama_mcp/features/protocol_isolation.feature) (file:///data/agy_ollama_mcp/features/protocol_isolation.feature) |
+| **REQ-009** | CRITICAL | File-Direct Sliding-Window Map-Reduce | File-direct chunking preserving line continuity; parallel worker map distillation; NO_SIGNAL filtering; tree-synthesis brief | [Open file_map_reduce.feature](file:///data/agy_ollama_mcp/features/file_map_reduce.feature) (file:///data/agy_ollama_mcp/features/file_map_reduce.feature) |
 
 ---
 
@@ -283,6 +284,7 @@ Generated deterministically by [scripts/generate_rtm.py](file:///data/agy_ollama
 | **REQ-006** | STANDARD | [`src/ollama_bridge/client.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/client.py) | `test_client.py`, `test_mutation_hardening.py`, `test_coverage_completion.py`, `test_ollama_bridge.py` | 32 tests | **YES** | **VERIFIED** |
 | **REQ-007** | STANDARD | [`src/ollama_bridge/client.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/client.py) | `test_client.py`, `test_mutation_hardening.py`, `test_coverage_completion.py` | 16 tests | **YES** | **VERIFIED** |
 | **REQ-008** | CRITICAL | [`src/ollama_bridge/server.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/server.py), [`config.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/config.py) | `test_server.py`, `test_resolution.py`, `test_mutation_hardening.py`, `test_ollama_bridge.py` | 6 tests | **YES** | **VERIFIED** |
+| **REQ-009** | CRITICAL | [`src/ollama_bridge/engine.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/engine.py), [`server.py`](file:///data/agy_ollama_mcp/src/ollama_bridge/server.py) | `test_file_map_reduce.py`, `test_mutation_hardening.py`, `test_server.py` | 11 tests | **YES** | **VERIFIED** |
 
 ---
 

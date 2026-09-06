@@ -18,6 +18,7 @@ from .engine import (
     local_summarize_and_extract as engine_summarize,
     local_chunked_summary as engine_chunked_summary,
     local_extract_json as engine_extract_json,
+    local_map_reduce_file as engine_map_reduce_file,
 )
 
 logger = configure_logging()
@@ -95,6 +96,26 @@ def local_list_models() -> str:
 def local_prewarm_model(model: str = "") -> str:
     """Pre-warm a local model into memory/VRAM with keep_alive=-1 so subsequent calls have zero cold-start delay."""
     return client_prewarm_model(model=model)
+
+
+@mcp.tool()
+def local_map_reduce_file(
+    file_path: str,
+    extraction_goal: str,
+    chunk_size: int = 400,
+    overlap: int = 50,
+    concurrency: int = 2,
+    model: str = "",
+) -> str:
+    """Compress large files, traces, or logs using local Ollama Map-Reduce before ingesting into context."""
+    return engine_map_reduce_file(
+        file_path=file_path,
+        extraction_goal=extraction_goal,
+        chunk_size=chunk_size,
+        overlap=overlap,
+        concurrency=concurrency,
+        model=model,
+    )
 
 
 def main() -> None:

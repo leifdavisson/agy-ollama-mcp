@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "governance": "INCOSE-DO-178C-Level-A",
   "summary": {
-    "total_requirements": 8,
-    "verified_requirements": 8,
+    "total_requirements": 9,
+    "verified_requirements": 9,
     "coverage_percentage": 100.0,
-    "total_verifying_tests_ast": 124,
+    "total_verifying_tests_ast": 135,
     "orphaned_tests_count": 0,
     "uncovered_requirements_count": 0,
     "statement_coverage_percentage": 100.0,
@@ -43,35 +43,35 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_resolution_fetch_tags_names_success_and_edge_cases",
-          "line_number": 117,
+          "line_number": 120,
           "description": "Kill mutants in _fetch_tags_names: URL, timeout, status_code, JSON parsing."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_resolution_select_preferred_model_filtering",
-          "line_number": 150,
+          "line_number": 153,
           "description": "Kill mutants in select_preferred_model: whitespace and candidate matching."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_resolution_resolve_model_defaults_and_whitespace",
-          "line_number": 167,
+          "line_number": 170,
           "description": "Kill mutants in resolve_model: default argument, empty string fallthrough."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_resolution_coder_keyword_fallback",
-          "line_number": 486,
+          "line_number": 489,
           "description": "Kill mutants in coder keyword selection."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_resolve_model_delegation_to_available_models",
-          "line_number": 627,
+          "line_number": 630,
           "description": "Kill mutants in OllamaClient.resolve_model argument wiring and get_available_models call."
         },
         {
@@ -302,21 +302,21 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_query_ollama_exact_payload_and_defaults",
-          "line_number": 309,
+          "line_number": 312,
           "description": "Kill mutants in query_ollama: payload structure, options, timeout, defaults."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_local_draft_code_prompt_and_system_exact",
-          "line_number": 353,
+          "line_number": 356,
           "description": "Kill mutants in local_draft_code: prompt assembly, default args, system prompt."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_query_ollama_exact_error_messages_and_empty_response",
-          "line_number": 569,
+          "line_number": 572,
           "description": "Kill mutants in query_ollama error messages and missing response key."
         },
         {
@@ -378,7 +378,7 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_local_summarize_and_extract_exact",
-          "line_number": 389,
+          "line_number": 392,
           "description": "Kill mutants in local_summarize_and_extract: system prompt, extraction prompt."
         },
         {
@@ -532,14 +532,14 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_partition_chunks_multiline_join_and_boundary",
-          "line_number": 411,
+          "line_number": 414,
           "description": "Kill mutant _partition_chunks__mutmut_25 (\"XXXX\".join) and chunk size validation."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_local_chunked_summary_map_reduce_exact",
-          "line_number": 431,
+          "line_number": 434,
           "description": "Kill mutants in local_chunked_summary: synthesis prompt, headers, system prompt."
         },
         {
@@ -593,7 +593,7 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_engine_local_extract_json_exact_prompts_and_markdown_stripping",
-          "line_number": 464,
+          "line_number": 467,
           "description": "Kill mutants in local_extract_json: system prompt, schema formatting, code fence stripping."
         },
         {
@@ -810,42 +810,42 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_init_and_default_attributes",
-          "line_number": 195,
+          "line_number": 198,
           "description": "Kill mutants in OllamaClient.__init__: host, timeout, configured_model, _last_error."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_format_bytes_to_gb_exact_values",
-          "line_number": 216,
+          "line_number": 219,
           "description": "Kill mutants in format_bytes_to_gb: rounding, power of 1024, suffix."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_get_available_models_call_contract",
-          "line_number": 226,
+          "line_number": 229,
           "description": "Kill mutants in get_available_models: exact URL, timeout, and state."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_list_models_dataclass_fields",
-          "line_number": 242,
+          "line_number": 245,
           "description": "Kill mutants in list_models: ModelInfo field assignments and default detection."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_get_available_models_error_messages",
-          "line_number": 493,
+          "line_number": 496,
           "description": "Kill mutants in OllamaClient error message formatting."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_list_models_unknown_fallbacks",
-          "line_number": 612,
+          "line_number": 615,
           "description": "Kill mutants in list_models default fallback values for name, size, details."
         }
       ],
@@ -970,14 +970,14 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_prewarm_model_call_contract",
-          "line_number": 288,
+          "line_number": 291,
           "description": "Kill mutants in prewarm_model: URL, keep_alive=-1, payload, timeout, output text."
         },
         {
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_client_prewarm_model_error_messages",
-          "line_number": 537,
+          "line_number": 540,
           "description": "Kill mutants in prewarm_model error message formatting."
         }
       ],
@@ -1005,7 +1005,7 @@
           "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
           "relative_file": "tests/test_mutation_hardening.py",
           "function": "test_config_logging_attributes_and_defaults",
-          "line_number": 78,
+          "line_number": 81,
           "description": "Kill logging mutants: name, level, handlers, formatter, stream, propagate."
         },
         {
@@ -1040,8 +1040,109 @@
           "file": "/data/agy_ollama_mcp/tests/test_server.py",
           "relative_file": "tests/test_server.py",
           "function": "test_server_main_entrypoint",
-          "line_number": 47,
+          "line_number": 51,
           "description": "Verify server.main() calls mcp.run(transport='stdio')."
+        }
+      ],
+      "verification_status": "VERIFIED"
+    },
+    {
+      "requirement_id": "REQ-009",
+      "title": "File-Direct Sliding-Window Map-Reduce",
+      "safety_level": "CRITICAL",
+      "description": "The system shall read large files directly from disk, partition lines using a configurable sliding-window overlap, execute concurrent local Ollama map distillation passes discarding NO_SIGNAL chunks, and synthesize intermediate summaries into a consolidated diagnostic brief.",
+      "acceptance_criteria": [
+        "Resolves user/relative file paths and returns clear error if file does not exist.",
+        "Single-pass summary if file lines count <= chunk_size.",
+        "Splits lines into chunks of chunk_size with overlap lines preserved across boundaries.",
+        "Executes map workers concurrently across threads up to specified concurrency limit.",
+        "Filters out 'NO_SIGNAL' chunk responses prior to Reduce synthesis.",
+        "Synthesizes intermediate findings into a cohesive deduplicated final report."
+      ],
+      "specification_feature": "features/file_map_reduce.feature",
+      "implementation_sources": [
+        "src/ollama_bridge/engine.py",
+        "src/ollama_bridge/server.py"
+      ],
+      "mcdc_verified": true,
+      "verifying_tests_count": 11,
+      "verifying_tests": [
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_chunk_lines_overlap_validation_and_empty",
+          "line_number": 32,
+          "description": "Verify input validation and empty lines handling in chunk_lines_overlap."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_chunk_lines_overlap_sliding_window",
+          "line_number": 53,
+          "description": "Verify sliding window lines overlap and preservation across chunk boundaries."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_map_worker_prompt_and_system",
+          "line_number": 78,
+          "description": "Verify map_worker prompt construction and system instruction."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_nonexistent_and_dir",
+          "line_number": 99,
+          "description": "Verify error handling for missing files and directories."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_empty",
+          "line_number": 114,
+          "description": "Verify empty file handling."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_single_pass",
+          "line_number": 123,
+          "description": "Verify small file executes single-pass without chunking."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_multi_chunk_with_no_signal",
+          "line_number": 148,
+          "description": "Verify multi-chunk map-reduce when all chunks yield NO_SIGNAL."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_multi_chunk_synthesis",
+          "line_number": 167,
+          "description": "Verify multi-chunk map-reduce successfully runs concurrent workers and synthesizes brief."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_file_map_reduce.py",
+          "relative_file": "tests/test_file_map_reduce.py",
+          "function": "test_local_map_reduce_file_relative_path",
+          "line_number": 204,
+          "description": "Verify local_map_reduce_file handles relative paths."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_chunk_lines_overlap_mutation_hardening",
+          "line_number": 643,
+          "description": "Kill mutants in chunk_lines_overlap step calculation and boundary conditions."
+        },
+        {
+          "file": "/data/agy_ollama_mcp/tests/test_mutation_hardening.py",
+          "relative_file": "tests/test_mutation_hardening.py",
+          "function": "test_map_worker_and_reduce_prompt_mutations",
+          "line_number": 670,
+          "description": "Kill mutants in map_worker and local_map_reduce_file prompt structure and constants."
         }
       ],
       "verification_status": "VERIFIED"

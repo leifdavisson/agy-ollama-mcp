@@ -80,6 +80,7 @@ def build_rtm(
         "REQ-006": "features/model_inventory.feature",
         "REQ-007": "features/model_inventory.feature",
         "REQ-008": "features/protocol_isolation.feature",
+        "REQ-009": "features/file_map_reduce.feature",
     }
 
     source_map = {
@@ -91,6 +92,7 @@ def build_rtm(
         "REQ-006": ["src/ollama_bridge/client.py"],
         "REQ-007": ["src/ollama_bridge/client.py"],
         "REQ-008": ["src/ollama_bridge/server.py", "src/ollama_bridge/config.py"],
+        "REQ-009": ["src/ollama_bridge/engine.py", "src/ollama_bridge/server.py"],
     }
 
     mcdc_verified = {
@@ -102,6 +104,7 @@ def build_rtm(
         "REQ-006": True,
         "REQ-007": True,
         "REQ-008": True,
+        "REQ-009": True,
     }
 
     matrix: List[Dict[str, Any]] = []

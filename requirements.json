@@ -89,5 +89,19 @@
       "Stderr stream handles all log output without polluting stdout.",
       "Responds to initialize, notifications/initialized, tools/list, and tools/call."
     ]
+  },
+  {
+    "id": "REQ-009",
+    "title": "File-Direct Sliding-Window Map-Reduce",
+    "safety_level": "CRITICAL",
+    "description": "The system shall read large files directly from disk, partition lines using a configurable sliding-window overlap, execute concurrent local Ollama map distillation passes discarding NO_SIGNAL chunks, and synthesize intermediate summaries into a consolidated diagnostic brief.",
+    "acceptance_criteria": [
+      "Resolves user/relative file paths and returns clear error if file does not exist.",
+      "Single-pass summary if file lines count <= chunk_size.",
+      "Splits lines into chunks of chunk_size with overlap lines preserved across boundaries.",
+      "Executes map workers concurrently across threads up to specified concurrency limit.",
+      "Filters out 'NO_SIGNAL' chunk responses prior to Reduce synthesis.",
+      "Synthesizes intermediate findings into a cohesive deduplicated final report."
+    ]
   }
 ]

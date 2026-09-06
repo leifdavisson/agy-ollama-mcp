@@ -152,5 +152,29 @@ def get_available_models():
     return client.get_available_models()
 
 
+def chunk_lines_overlap(lines: List[str], chunk_size: int = 400, overlap: int = 50) -> List[str]:
+    """Slice lines into overlapping chunks preserving line boundaries."""
+    return engine.chunk_lines_overlap(lines, chunk_size=chunk_size, overlap=overlap)
+
+
+def local_map_reduce_file(
+    file_path: str,
+    extraction_goal: str,
+    chunk_size: int = 400,
+    overlap: int = 50,
+    concurrency: int = 2,
+    model: str = "",
+) -> str:
+    """Compress large files, traces, or logs using local Ollama Map-Reduce before ingesting into context."""
+    return engine.local_map_reduce_file(
+        file_path=file_path,
+        extraction_goal=extraction_goal,
+        chunk_size=chunk_size,
+        overlap=overlap,
+        concurrency=concurrency,
+        model=model,
+    )
+
+
 if __name__ == "__main__":
     main()

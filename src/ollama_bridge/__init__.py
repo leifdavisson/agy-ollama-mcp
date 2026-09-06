@@ -23,10 +23,13 @@ from .client import (
     local_prewarm_model,
 )
 from .engine import (
+    chunk_lines_overlap,
     local_chunked_summary,
     local_draft_code,
     local_extract_json,
+    local_map_reduce_file,
     local_summarize_and_extract,
+    map_worker,
     partition_chunks,
     query_ollama,
 )
@@ -49,10 +52,13 @@ __all__ = [
     "format_bytes_to_gb",
     "local_list_models",
     "local_prewarm_model",
+    "chunk_lines_overlap",
     "local_chunked_summary",
     "local_draft_code",
     "local_extract_json",
+    "local_map_reduce_file",
     "local_summarize_and_extract",
+    "map_worker",
     "partition_chunks",
     "query_ollama",
     "mcp",
